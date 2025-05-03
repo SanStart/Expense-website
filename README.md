@@ -24,5 +24,5 @@ A simple Django web application to track your expenses and income. Easily manage
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/expensewebsite.git
+git clone https://github.com/SanStart/expensewebsite.git
 cd expensewebsite
