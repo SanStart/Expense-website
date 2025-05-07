@@ -11,8 +11,10 @@
         </div>
 
         <div class="card-body">
-          <form method="post">
+          <form action="{% url 'register' %}" method="post">
             {% csrf_token %}
+
+            {% include 'partials/_messages.html' %}
             
             <div class="form-group">
               <input 
@@ -22,11 +24,10 @@
                 id="usernameField" 
                 class="form-control form-control-sm" 
                 required
+                value = "{{fieldValues.username}}"
               />
             </div>
-            <div class="invalid_feedback invalid-feedback" style="display:none">
-
-            </div>
+            <div class="invalid_feedback" style="display:none"></div>
             <p class="text-sm text-success usernameSuccessOutput"></p>
 
             <div class="form-group mt-2">
@@ -37,10 +38,11 @@
                 class="form-control form-control-sm" 
                 id="emailField" 
                 required
+                value = "{{fieldValues.email}}"
               />
             </div>
             <div class="emailFeedbackArea invalid-feedback" style="display:none"></div>
-          </div>
+
             <div class="form-group mt-2">
               <div class="input-group">
                 <input 
@@ -52,13 +54,13 @@
                   required
                 />
                 <div class="input-group-append">
-                  <span class="input-group-text" style="cursor:pointer;" onclick="togglePassword()">SHOW</span>
+                  <span id="togglePassword" class="input-group-text" style="cursor:pointer;" onclick="togglePassword()">SHOW</span>
                 </div>
               </div>
             </div>
 
             <div class="form-group d-flex justify-content-center mt-3">
-              <input type="submit" value="Register" class="btn btn-primary px-5">
+              <input type="submit" value="Register" class="btn btn-primary px-5 submit-btn">
             </div>
           </form>
         </div>
@@ -69,12 +71,19 @@
 
 <script>
   function togglePassword() {
-    const field = document.getEl+ementById('passwordField');
-    field.type = field.type === 'password' ? 'text' : 'password';
+    const field = document.getElementById('passwordField');
+    const toggle = document.getElementById('togglePassword');
+
+    if (field.type === 'password') {
+      field.type = 'text';
+      toggle.textContent = 'HIDE';
+    } else {
+      field.type = 'password';
+      toggle.textContent = 'SHOW';
+    }
   }
 </script>
 
+
 <script src="{% static 'js/register.js' %}"></script>
-
-
 {% endblock %}

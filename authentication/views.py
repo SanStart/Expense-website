@@ -4,6 +4,8 @@ import json
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from validate_email import validate_email
+from django.contrib import messages
+from django.core.mail import EmailMessage
 
 
 # Create your views here.
@@ -31,4 +33,50 @@ class UsernameValidationView(View):
 class RegistrationView(View):
     def get(self, request):
         return render(request, 'authentication/register.html')
+
+    def post(self, request):
+        #GET USER DATA
+
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
+
+        context = {
+            'fieldValues': request.POST
+        }
+
+        if not User.objects.filter(username=username).exists():
+            if not User.objects.filter(email=email).exists():
+
+
+                if len(password) < 8:
+                    messages.error(request, 'Password too short')
+                    return render(request, 'authentication/register.html', context)
+
+                user = User.objects.create_user(username=username,email=email)
+                user.set_password(password)
+                user.is_active = False
+                user.save()
+                email_subject = 'Please Verify Your Email Address'
+                email_body = "Dear Users Name,Thank you for signing up! To complete your registration, please verify your email address by clicking the link below:Verify EmailIf you did not create this account, you can safely ignore this message.Thank you,[Your Company Name] Team"
+                email = EmailMessage(
+                    email_subject,
+                    email_body,
+                    "noreply@semicolon.com",
+                    [email],
+                )
+                messages.success(request, 'Account successfully created')
+                return render(request, 'authentication/register.html')
+
+        return render(request, 'authentication/register.html')
+
+
+
+
+        # messages.success(request, 'Success whatsapp success')
+        # messages.warning(request, 'Success whatsapp warning')
+        # messages.info(request, 'Success whatsapp info')
+        # messages.error(request, 'Success whatsapp error')
+
+        # return render(request, 'authentication/register.html')       
         
